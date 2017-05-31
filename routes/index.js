@@ -3,7 +3,7 @@ var router = express.Router();
 var ical2json = require("ical2json");
 var request = require('request');
 var SunCalc = require('suncalc');
-var cmd = require('node-cmd');
+var spawn = require("child_process").spawn;
 
 var aantal = 0;
 
@@ -104,11 +104,16 @@ router.get('/', function (req, res, next) {
             };
         });
         console.log(wekker);
+		
+		var process = spawn('python',["routes/test.py"]);
+		process.stdout.on('data',function(chunk){
+		var textChunk = chunk.toString('utf8');// buffer to string
+		console.log(textChunk);
+		});
+		
+		
 		res.render('index', {title: 'ICalendar', Reload: aantal, wekker, min, max, zonOp, zonOn});
-    });
-
-	var pyScript = cmd.run("python test.py");
-	
+    });	
 
 });
 
