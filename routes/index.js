@@ -11,19 +11,24 @@ var aantal = 0;
 router.get('/', function (req, res, next) {
 
     aantal++;
-	var wekker;
+    var wekker;
     var output;
-	var min = 0;
-	var max = 0;
+    var min = 0;
+    var max = 0;
 
     request.get('https://asg-elo.somtoday.nl/services/webdav/calendarfeed/a87afea9-6794-46f3-8396-9c2effc0a6f3', function (error, response, body) {
         var times = SunCalc.getTimes(new Date(), 52.3367572, 5.2355392);
-		var zonOp = times.sunrise.getHours() + ":" + times.sunrise.getMinutes();
-		var zonOn = times.sunset.getHours() + ":" + times.sunset.getMinutes();
-		
-		output = ical2json.convert(body);
+        var vandaagOp = times.sunrise.getHours() + ":" + times.sunrise.getMinutes();
+        var vandaagOn = times.sunset.getHours() + ":" + times.sunset.getMinutes();
+
+        var date = new Date();                                  //Snellere methode kan nog toegepast worden bij het controlleren van het rooster.
+        date.setDate(date.getDate() + 1);
+        times = SunCalc.getTimes(date, 52.3367572, 5.2355392);
+        var morgenOp = times.sunrise.getHours() + ":" + times.sunrise.getMinutes();
+        var morgenOn = times.sunset.getHours() + ":" + times.sunset.getMinutes();
+        output = ical2json.convert(body);
         //console.log(output['VCALENDAR'][0]['VEVENT']);
-		
+
 
         var outputArray = output['VCALENDAR'][0]['VEVENT'];
 
@@ -38,15 +43,15 @@ router.get('/', function (req, res, next) {
             var day = currentDate.getDate() + 1
             var month = currentDate.getMonth() + 1
             var year = currentDate.getFullYear()
-			var dagHoeveelheid = new Date(currentDate.getFullYear(), currentDate.getMonth()+1, 0).getDate();
-			if(dagHoeveelheid < day){
-				month = month + 1;
-				day = 1;
-			}
+            var dagHoeveelheid = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+            if (dagHoeveelheid < day) {
+                month = month + 1;
+                day = 1;
+            }
             if (month < 10) {
                 month = "0" + String(month);
             }
-			if (day < 10) {
+            if (day < 10) {
                 day = "0" + String(day);
             }
             var dateFormatted = (String(year) + String(month) + String(day));
@@ -57,10 +62,10 @@ router.get('/', function (req, res, next) {
             end = parseInt(end.substr(0, 4));
 
 
-           // console.log((String(year) + String(month) + String(day)), date);
+            // console.log((String(year) + String(month) + String(day)), date);
 
             if (Number(dateFormatted) === Number(date)) {
-                dateStart.push({startDate: start, summary: outputArray[k].SUMMARY});
+                dateStart.push({ startDate: start, summary: outputArray[k].SUMMARY });
                 //console.log("gepusht");
             }
             if (Number(dateFormatted) === Number(date)) {
@@ -70,13 +75,13 @@ router.get('/', function (req, res, next) {
             //Lezen van summary en TODO lezen van javascript object
             //console.log("De les " + outputArray[k].SUMMARY + " begint om " + outputArray[k].DTSTART);
         }
-		
-	
-		var TempDate = [];
-		for(var k = 0; k < dateStart.length; k++){
-			TempDate[k] = dateStart[k]["startDate"] 
-		}
-		min = Math.min.apply(Math, TempDate);
+
+
+        var TempDate = [];
+        for (var k = 0; k < dateStart.length; k++) {
+            TempDate[k] = dateStart[k]["startDate"]
+        }
+        min = Math.min.apply(Math, TempDate);
         max = Math.max.apply(Math, dateEnd);
         console.log(min, ' tot ', max, ' | ', currentDate);
 
@@ -98,22 +103,22 @@ router.get('/', function (req, res, next) {
                 opstaanTijd: 1030,
             }
         ];
-        alarmTijden.forEach(function(element) {
-            if(element['eerstLesUurTijd'] === min){
+        alarmTijden.forEach(function (element) {
+            if (element['eerstLesUurTijd'] === min) {
                 wekker = element['opstaanTijd'];
             };
         });
         console.log(wekker);
-		
-		var process = spawn('python',["routes/test.py"]);
-		process.stdout.on('data',function(chunk){
-		var textChunk = chunk.toString('utf8');// buffer to string
-		console.log(textChunk);
-		});
-		
-		
-		res.render('index', {title: 'ICalendar', Reload: aantal, wekker, min, max, zonOp, zonOn});
-    });	
+
+        //	var process = spawn('python',["routes/test.py"]);
+        //	process.stdout.on('data',function(chunk){
+        //	var textChunk = chunk.toString('utf8');// buffer to string
+        console.log(textChunk);
+    });
+
+
+    res.render('index', { title: 'ICalendar', Reload: aantal, wekker, min, max, vandaagOp, vandaagOn, morgenOp, morgenOn });
+});	
 
 });
 
