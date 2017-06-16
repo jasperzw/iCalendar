@@ -4,8 +4,6 @@ var ical2json = require("ical2json");
 var request = require('request');
 var SunCalc = require('suncalc');
 var spawn = require("child_process").spawn;
-var LCD = require('lcdi2c');
-var lcd = new LCD( 1, 0x3f, 16, 2 );
 
 var aantal = 0;
 
@@ -86,8 +84,6 @@ router.get('/', function (req, res, next) {
         min = Math.min.apply(Math, TempDate);
         max = Math.max.apply(Math, dateEnd);
         console.log(min, ' tot ', max, ' | ', currentDate);
-        lcd.clear();
-        lcd.println("Morgen " + min + " tot " + max, 1);
         
 
         var alarmTijden = [
@@ -114,9 +110,6 @@ router.get('/', function (req, res, next) {
             };
         });
         console.log(wekker);
-
-        lcd.println("Wekker gezet om " + wekker);
-        lcd.on();
 
         //	var process = spawn('python',["routes/test.py"]);
         //	process.stdout.on('data',function(chunk){
