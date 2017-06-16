@@ -2,12 +2,28 @@ var express = require('express');
 var router = express.Router();
 var ical2json = require("ical2json");
 var request = require('request');
-var SunCalc = require('suncalc');
 var spawn = require("child_process").spawn;
-var LCD = require('lcdi2c');
-var lcd = new LCD( 1, 0x3f, 16, 2 );
+// var LCD = require('lcdi2c');
+// var lcd = new LCD( 1, 0x3f, 16, 2 );
+var SunCalc = require('suncalc');
 
 var aantal = 0;
+
+function convertTime12to24(time12h) {
+    const [time, modifier] = time12h.split(' ');
+
+    let [hours, minutes] = time.split(':');
+
+    if (hours === '12') {
+        hours = '00';
+    }
+
+    if (modifier === 'PM') {
+        hours = parseInt(hours, 10) + 12;
+    }
+
+    return hours + ':' + minutes;
+}
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -19,15 +35,8 @@ router.get('/', function (req, res, next) {
     var max = 0;
 
     request.get('https://asg-elo.somtoday.nl/services/webdav/calendarfeed/a87afea9-6794-46f3-8396-9c2effc0a6f3', function (error, response, body) {
-        var times = SunCalc.getTimes(new Date(), 52.3367572, 5.2355392);
-        var vandaagOp = times.sunrise.getHours() + ":" + times.sunrise.getMinutes();
-        var vandaagOn = times.sunset.getHours() + ":" + times.sunset.getMinutes();
 
-        var date = new Date();                                  //Snellere methode kan nog toegepast worden bij het controlleren van het rooster.
-        date.setDate(date.getDate() + 1);
-        times = SunCalc.getTimes(date, 52.3367572, 5.2355392);
-        var morgenOp = times.sunrise.getHours() + ":" + times.sunrise.getMinutes();
-        var morgenOn = times.sunset.getHours() + ":" + times.sunset.getMinutes();
+
         output = ical2json.convert(body);
         //console.log(output['VCALENDAR'][0]['VEVENT']);
 
@@ -67,7 +76,7 @@ router.get('/', function (req, res, next) {
             // console.log((String(year) + String(month) + String(day)), date);
 
             if (Number(dateFormatted) === Number(date)) {
-                dateStart.push({ startDate: start, summary: outputArray[k].SUMMARY });
+                dateStart.push({startDate: start, summary: outputArray[k].SUMMARY});
                 //console.log("gepusht");
             }
             if (Number(dateFormatted) === Number(date)) {
@@ -86,9 +95,9 @@ router.get('/', function (req, res, next) {
         min = Math.min.apply(Math, TempDate);
         max = Math.max.apply(Math, dateEnd);
         console.log(min, ' tot ', max, ' | ', currentDate);
-        lcd.clear();
-        lcd.println("Morgen " + min + " tot " + max, 1);
-        
+        // lcd.clear();
+        // lcd.println("Morgen " + min + " tot " + max, 1);
+
 
         var alarmTijden = [
             {
@@ -111,21 +120,47 @@ router.get('/', function (req, res, next) {
         alarmTijden.forEach(function (element) {
             if (element['eerstLesUurTijd'] === min) {
                 wekker = element['opstaanTijd'];
-            };
+            }
+            ;
         });
         console.log(wekker);
 
-        lcd.println("Wekker gezet om " + wekker);
-        lcd.on();
+        // lcd.println("Wekker gezet om " + wekker);
+        // lcd.on();
 
         //	var process = spawn('python',["routes/test.py"]);
         //	process.stdout.on('data',function(chunk){
         //	var textChunk = chunk.toString('utf8');// buffer to string
 
 
+        // om de zonsopgang en zonsondergang voor vandaag te krijgen
 
-    res.render('index', { title: 'ICalendar', Reload: aantal, wekker, min, max, vandaagOp, vandaagOn, morgenOp, morgenOn });
-    });	
+
+        var times = SunCalc.getTimes(new Date(), 52.359529,5.239041);
+        var vandaagOp = times.sunriseEnd.getHours() + ":" + times.sunriseEnd.getMinutes();
+        var vandaagOn = times.sunset.getHours() + ":" + times.sunset.getMinutes();
+
+        var date = new Date();                                  //Snellere methode kan nog toegepast worden bij het controlleren van het rooster.
+        date.setDate(date.getDate() + 1);
+        times = SunCalc.getTimes(date, 52.359529,5.239041);
+        var morgenOp = times.sunriseEnd.getHours() + ":" + times.sunriseEnd.getMinutes();
+        var morgenOn = times.sunsetStart.getHours() + ":" + times.sunsetStart.getMinutes();
+
+
+        res.render('index', {
+            title: 'ICalendar',
+            Reload: aantal,
+            wekker,
+            min,
+            max,
+            vandaagOp,
+            vandaagOn,
+            morgenOp,
+            morgenOn
+        });
+
+
+    });
 });
 
 
