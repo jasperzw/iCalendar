@@ -4,6 +4,8 @@ var ical2json = require("ical2json");
 var request = require('request');
 var SunCalc = require('suncalc');
 var spawn = require("child_process").spawn;
+var LCD = require('lcdi2c');
+var lcd = new LCD( 1, 0x3f, 16, 2 );
 
 var aantal = 0;
 
@@ -40,7 +42,7 @@ router.get('/', function (req, res, next) {
             //TODO parse date to readable format. outputArray[k].DTSTART
 
             var currentDate = new Date();
-            var day = currentDate.getDate() + 1
+            var day = currentDate.getDate() + 3
             var month = currentDate.getMonth() + 1
             var year = currentDate.getFullYear()
             var dagHoeveelheid = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
@@ -84,6 +86,9 @@ router.get('/', function (req, res, next) {
         min = Math.min.apply(Math, TempDate);
         max = Math.max.apply(Math, dateEnd);
         console.log(min, ' tot ', max, ' | ', currentDate);
+        lcd.clear();
+        lcd.println("Morgen " + min + " tot " + max, 1);
+        
 
         var alarmTijden = [
             {
@@ -110,16 +115,17 @@ router.get('/', function (req, res, next) {
         });
         console.log(wekker);
 
+        lcd.println("Wekker gezet om " + wekker);
+        lcd.on();
+
         //	var process = spawn('python',["routes/test.py"]);
         //	process.stdout.on('data',function(chunk){
         //	var textChunk = chunk.toString('utf8');// buffer to string
-        console.log(textChunk);
-    });
+
 
 
     res.render('index', { title: 'ICalendar', Reload: aantal, wekker, min, max, vandaagOp, vandaagOn, morgenOp, morgenOn });
-});	
-
+    });	
 });
 
 
