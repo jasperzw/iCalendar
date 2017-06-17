@@ -17,6 +17,7 @@
     "node-cmd": "^3.0.0",
     "request": "^2.81.0",
     "serve-favicon": "~2.4.2",
+    "suncalc": "^1.8.0",
     "true-domain": "^0.1.0"
   }
 }
