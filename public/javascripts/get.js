@@ -1,4 +1,4 @@
-var gegevensVerkrijgen = function(){
+var gegevensVerkrijgen = function(callback){
 var ical2json = require("ical2json");
 var request = require('request');
 var SunCalc = require('suncalc');
@@ -42,7 +42,7 @@ return vr;
             //TODO parse date to readable format. outputArray[k].DTSTART
 
             var currentDate = new Date();
-            var day = digitControle(currentDate.getDate() + 2);
+            var day = digitControle(currentDate.getDate() + 1);
             var month = digitControle(currentDate.getMonth() + 1);
             var year = currentDate.getFullYear();
             var dagHoeveelheid = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
@@ -121,6 +121,7 @@ return vr;
         }
 
         fs.writeFile("public/DB.json", JSON.stringify(tijdenDB), "utf8");
+        callback();
     });
 }
 

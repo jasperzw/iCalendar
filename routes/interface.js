@@ -13,6 +13,7 @@ currentScreen = 0;
 }
 
 stdin.addListener("data", function(d) {
+var gegevens = require('../DB.json')
 var input = d.toString().trim();
 currentScreen = input;
 console.log("currentScreen: ", currentScreen);
