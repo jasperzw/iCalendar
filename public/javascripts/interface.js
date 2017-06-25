@@ -1,7 +1,9 @@
 var lcd = require("./lcdMock").lcd
 var lcd = new lcd();
 var stdin = process.openStdin();
-var gegevens = require('../DB.json')
+var fs = require('fs');
+var gegevens = JSON.parse(fs.readFileSync('public/DB.json', 'utf8'));
+console.log(gegevens);
 var currentScreen = 0;
 
 var start = function(){
