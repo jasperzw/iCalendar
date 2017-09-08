@@ -107,14 +107,14 @@ return vr;
         
         });
         console.log("WekkerVar: ", wekker);
-
+        nu = new Date();
         var tijdenDB = {
             "wekker"       : wekker,
             "min"          : min,
             "max"          : max,
             "dateStart"    : dateStart,
             "dateEnd"      : dateEnd,
-            "dateCreation" : new Date(),
+            "dateCreation" : new Date(nu.getFullYear(), nu.getMonth(), nu.getDate(), (nu.getHours() + 2), nu.getMinutes(), nu.getSeconds(),nu.getMilliseconds()),
             "vandaagOp"    : vandaagOp,
             "vandaagOn"    : vandaagOn,
             "day"          : day,

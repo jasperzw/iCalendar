@@ -11,8 +11,6 @@ var gegevens = get.gegevensVerkrijgen(function(tijdenDB){
 }
 );
 
-console.log("1: ", gegevens);
-
 function setWekker(gegevens){
     var nu = new Date();
     var mTot10 = new Date(nu.getFullYear(), nu.getMonth(), nu.getDate(), 22, 0, 0, 0) - nu;
@@ -34,15 +32,10 @@ function setWekker(gegevens){
 
     console.log("milli tot wekker: ", mTotWekker);
     console.log("milli tot 10 uur:", mTot10);
+
     setTimeout(get.gegevensVerkrijgen, mTot10);
     setTimeout(alarm.afgaan, mTotWekker)
 }
-
-
-
-
-
-
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
