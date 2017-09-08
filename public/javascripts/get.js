@@ -42,7 +42,7 @@ return vr;
             //TODO parse date to readable format. outputArray[k].DTSTART
 
             var currentDate = new Date();
-            var day = digitControle(currentDate.getDate() - 1);
+            var day = digitControle(currentDate.getDate());
             var month = digitControle(currentDate.getMonth() + 1);
             var year = currentDate.getFullYear();
             var dagHoeveelheid = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
@@ -79,7 +79,7 @@ return vr;
         }
         min = Math.min.apply(Math, TempDate);
         max = Math.max.apply(Math, dateEnd);
-        console.log(min, ' tot ', max, ' | ', currentDate);
+        //console.log(min, ' tot ', max, ' | ', currentDate);
         
 
         var alarmTijden = [
@@ -106,7 +106,7 @@ return vr;
             };
         
         });
-        console.log("WekkerVar: ", wekker);
+        //console.log("WekkerVar: ", wekker);
         nu = new Date();
         var tijdenDB = {
             "wekker"       : wekker,

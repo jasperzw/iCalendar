@@ -6,11 +6,15 @@ var alarm = require('../public/javascripts/alarm');
 var fs = require('fs');
 var HvWebBz = 0;
 
-var gegevens = get.gegevensVerkrijgen(function(tijdenDB){
+updateGev();
+
+function updateGev(){
+    get.gegevensVerkrijgen(function(tijdenDB){
     interface.start(tijdenDB);
     setWekker(tijdenDB);
-}
-);
+    })
+};
+
 
 function setWekker(gegevens){
     var nu = new Date();
@@ -19,7 +23,7 @@ function setWekker(gegevens){
          mTot10 += 86400000;
     }
 
-    if (gegevens["wekker"] === undefined){
+    if (gegevens["wekker"] === "0000"){
     console.log("Er is geen wekker gezet voor morgen");
     } else {
 
@@ -34,8 +38,11 @@ function setWekker(gegevens){
     console.log("milli tot wekker: ", mTotWekker);
     console.log("milli tot 10 uur:", mTot10);
 
-    setTimeout(get.gegevensVerkrijgen, mTot10);
+    setTimeout(updateGev, mTot10);
+    if (gegevens["wekker"] !== "0000"){
     setTimeout(alarm.afgaan, mTotWekker)
+    console.log("alarm gezet om:", gegevens["wekker"]);
+    }
 }
 
 /* GET home page. */
