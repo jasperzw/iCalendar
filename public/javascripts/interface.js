@@ -2,11 +2,11 @@ var lcd = require("./lcdMock").lcd
 var lcd = new lcd();
 var stdin = process.openStdin();
 var fs = require('fs');
-var gegevens = JSON.parse(fs.readFileSync('public/DB.json', 'utf8'));
-console.log(gegevens);
 var currentScreen = 0;
+var gegevens = "";
 
-var start = function(){
+var start = function(tijdenDB){
+gegevens = tijdenDB;
 lcd.clear();
 lcd.println(gegevens.min + " tot " + gegevens.max,1);
 lcd.println("Wekker op " + gegevens.wekker,2);
