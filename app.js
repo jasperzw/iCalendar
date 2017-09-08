@@ -32,6 +32,11 @@ app.use(function(req, res, next) {
   next(err);
 });
 
+app.on('listening', () => {
+    console.log('ready to loop!');
+})
+
+
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
