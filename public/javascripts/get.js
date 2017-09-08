@@ -3,6 +3,7 @@ var ical2json = require("ical2json");
 var request = require('request');
 var SunCalc = require('suncalc');
 var fs = require("fs");
+const iCalAdress = require("../../iCalAdress.js").iCalAdress;
 
 var digitControle = function(vr){
 if (vr < 10) {
@@ -17,7 +18,7 @@ return vr;
     var min = 0;
     var max = 0;
 
-    request.get('https://asg-elo.somtoday.nl/services/webdav/calendarfeed/a87afea9-6794-46f3-8396-9c2effc0a6f3', function (error, response, body) {
+    request.get(iCalAdress, function (error, response, body) {
         var times = SunCalc.getTimes(new Date(), 52.3367572, 5.2355392);
         
         var vandaagOp = times.sunrise.getHours() + ":" + digitControle(times.sunrise.getMinutes());
