@@ -3,6 +3,13 @@ var lcd = new lcd();
 var stdin = process.openStdin();
 var fs = require('fs');
 var currentScreen = 0;
+var Gpio = require('pigpio').Gpio,
+
+var screens = {
+    0: function(){lcd.println(gegevens.min + " tot " + gegevens.max,1); lcd.println("Wekker op " + gegevens.wekker,2);},
+    1: function(){lcd.println("Zon op: " + gegevens.vandaagOp,1); lcd.println("Zon on: " + gegevens.vandaagOn, 2)},
+    2: function(){lcd.println(vakken(gegevens)[0],1); lcd.println(vakken(gegevens)[1],2)}
+}
 
 var start = function(tijdenDB){
 var gegevens = tijdenDB;
@@ -18,11 +25,6 @@ var gegevens = JSON.parse(fs.readFileSync('public/DB.json', 'utf8'));
 var input = d.toString().trim();
 currentScreen = input;
 console.log("currentScreen: ", currentScreen);
-    screens = {
-        0: function(){lcd.println(gegevens.min + " tot " + gegevens.max,1); lcd.println("Wekker op " + gegevens.wekker,2);},
-        1: function(){lcd.println("Zon op: " + gegevens.vandaagOp,1); lcd.println("Zon on: " + gegevens.vandaagOn, 2)},
-        2: function(){lcd.println(vakken(gegevens)[0],1); lcd.println(vakken(gegevens)[1],2)}
-    }
     screens[currentScreen]();
 });
 
@@ -61,5 +63,59 @@ var vakken = function(gegevens){
     var ln = [ln1,ln2];
     return ln;
 }
+
+
+//--------- I/O ---------//
+
+
+button = new Gpio(4, {
+  mode: Gpio.INPUT,
+  pullUpDown: Gpio.PUD_UP,
+  edge: Gpio.EITHER_EDGE
+});
+
+button1 = new Gpio(17, {
+  mode: Gpio.INPUT,
+  pullUpDown: Gpio.PUD_UP,
+  edge: Gpio.EITHER_EDGE
+});
+
+  button2 = new Gpio(27, {
+  mode: Gpio.INPUT,
+  pullUpDown: Gpio.PUD_UP,
+  edge: Gpio.EITHER_EDGE
+});
+
+  button3 = new Gpio(22, {
+  mode: Gpio.INPUT,
+  pullUpDown: Gpio.PUD_UP,
+  edge: Gpio.EITHER_EDGE
+});
+
+button3.on('interrupt', function (level) {
+if(level === 0){
+console.log("Knop 3: ", level);
+      }
+});
+
+
+button2.on('interrupt', function (level) {
+if(level === 0){
+console.log("Knop 2: ", level);
+      }
+});
+
+button1.on('interrupt', function (level) {
+    if(level === 0){
+    console.log("Knop 0: ", level);
+          }
+    });
+
+button.on('interrupt', function (level) {
+if(level === 0){
+console.log("Knop 0: ", level);
+      }
+});
+
 
 module.exports = {start, update, stop}
