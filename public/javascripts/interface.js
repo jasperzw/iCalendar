@@ -6,25 +6,26 @@ var currentScreen = 0;
 var LCD = require('lcdi2c');
 var lcd = new LCD( 1,0x3f, 16, 2);
 var Gpio = require('pigpio').Gpio,
+var gegevens = [];
+
 var screens = {
-    0: function(){lcd.println(gegevens.min + " tot " + gegevens.max + "        ",1); lcd.println("Wekker op " + gegevens.wekker + "         ",2);},
-    1: function(){lcd.println("Zon op: " + gegevens.vandaagOp + "           ",1); lcd.println("Zon on: " + gegevens.vandaagOn + "           ", 2)},
-    2: function(){lcd.println(vakken(gegevens)[0] + "                                          ",1); lcd.println(vakken(gegevens)[1] + "                              ",2)},
-"stop": function(){lcd.clear(); lcd.off()},
-"start": function(){lcd.clear(); lcd.on()}
+    0: function(){lcd.clear();lcd.println(gegevens.min + " tot " + gegevens.max,1); lcd.println("Wekker op " + gegevens.wekker,2);},
+    1: function(){lcd.clear();lcd.println("Zon op: " + gegevens.vandaagOp,1); lcd.println("Zon on: " + gegevens.vandaagOn, 2)},
+    2: function(){lcd.clear();lcd.println(vakken(gegevens)[0],1); lcd.println(vakken(gegevens)[1],2)},
+    3: function(){lcd.clear();nu = new Date();lcd.println(nu.getDay() + " | " + nu.getHours() + ":" + nu.getMinutes(),1)}
+    "stop": function(){lcd.clear(); lcd.off()},
+    "start": function(){lcd.clear(); lcd.on()}
 }
 
 var start = function(tijdenDB){
 var gegevens = tijdenDB;
 lcd.clear();
-lcd.println(gegevens.min + " tot " + gegevens.max,1);
-lcd.println("Wekker op " + gegevens.wekker,2);
+screens[3]();
 lcd.on();
-currentScreen = 0;
 }
 
 stdin.addListener("data", function(d) {
-var gegevens = JSON.parse(fs.readFileSync('public/DB.json', 'utf8'));
+gegevens = JSON.parse(fs.readFileSync('public/DB.json', 'utf8'));
 var input = d.toString().trim();
 currentScreen = input;
 console.log("currentScreen: ", currentScreen);
