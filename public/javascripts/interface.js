@@ -1,8 +1,10 @@
-var lcd = require("./lcdMock").lcd
-var lcd = new lcd();
+//var lcd = require("./lcdMock").lcd
+//var lcd = new lcd();
 var stdin = process.openStdin();
 var fs = require('fs');
 var currentScreen = 0;
+var LCD = require('lcdi2c');
+var lcd = new LCD( 1,0x3f, 16, 2);
 
 var start = function(tijdenDB){
 var gegevens = tijdenDB;
@@ -19,9 +21,11 @@ var input = d.toString().trim();
 currentScreen = input;
 console.log("currentScreen: ", currentScreen);
     screens = {
-        0: function(){lcd.println(gegevens.min + " tot " + gegevens.max,1); lcd.println("Wekker op " + gegevens.wekker,2);},
-        1: function(){lcd.println("Zon op: " + gegevens.vandaagOp,1); lcd.println("Zon on: " + gegevens.vandaagOn, 2)},
-        2: function(){lcd.println(vakken(gegevens)[0],1); lcd.println(vakken(gegevens)[1],2)}
+        0: function(){lcd.println(gegevens.min + " tot " + gegevens.max + "        ",1); lcd.println("Wekker op " + gegevens.wekker + "         ",2);},
+        1: function(){lcd.println("Zon op: " + gegevens.vandaagOp + "           ",1); lcd.println("Zon on: " + gegevens.vandaagOn + "           ", 2)},
+        2: function(){lcd.println(vakken(gegevens)[0] + "                                          ",1); lcd.println(vakken(gegevens)[1] + "                              ",2)},
+	"stop": function(){lcd.clear(); lcd.off()},
+	"start": function(){lcd.clear(); lcd.on()}
     }
     screens[currentScreen]();
 });
