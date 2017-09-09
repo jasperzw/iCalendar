@@ -5,20 +5,20 @@ var fs = require('fs');
 var currentScreen = 0;
 var LCD = require('lcdi2c');
 var lcd = new LCD( 1,0x3f, 16, 2);
-var Gpio = require('pigpio').Gpio,
-var gegevens = [];
+var Gpio = require('pigpio').Gpio
+var gegevens = "";
 
-var screens = {
+screens = {
     0: function(){lcd.clear();lcd.println(gegevens.min + " tot " + gegevens.max,1); lcd.println("Wekker op " + gegevens.wekker,2);},
     1: function(){lcd.clear();lcd.println("Zon op: " + gegevens.vandaagOp,1); lcd.println("Zon on: " + gegevens.vandaagOn, 2)},
     2: function(){lcd.clear();lcd.println(vakken(gegevens)[0],1); lcd.println(vakken(gegevens)[1],2)},
-    3: function(){lcd.clear();nu = new Date();lcd.println(nu.getDay() + " | " + nu.getHours() + ":" + nu.getMinutes(),1)}
+    3: function(){lcd.clear();nu = new Date();lcd.println("het is " + nu.getHours() + ":" + nu.getMinutes(),1); lcd.println("datum: " + nu.getDay() + "/" + nu.getMonth(),2)},
     "stop": function(){lcd.clear(); lcd.off()},
     "start": function(){lcd.clear(); lcd.on()}
 }
 
 var start = function(tijdenDB){
-var gegevens = tijdenDB;
+ gegevens = tijdenDB;
 lcd.clear();
 screens[3]();
 lcd.on();
