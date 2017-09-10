@@ -7,6 +7,8 @@ var LCD = require('lcdi2c');
 var lcd = new LCD( 1,0x3f, 16, 2);
 var Gpio = require('pigpio').Gpio
 var gegevens = "";
+var Gpio = require('pigpio').Gpio,
+
 
 screens = {
     0: function(){lcd.clear();lcd.println(gegevens.min + " tot " + gegevens.max,1); lcd.println("Wekker op " + gegevens.wekker,2);},
@@ -124,5 +126,37 @@ button = new Gpio(4, {
   screens[0]();
         }
   });
+
+
+  trigger = new Gpio(23, {mode: Gpio.OUTPUT}),
+  echo = new Gpio(24, {mode: Gpio.INPUT, alert: true});
+// The number of microseconds it takes sound to travel 1cm at 20 degrees celcius
+var MICROSECDONDS_PER_CM = 1e6/34321;
+
+trigger.digitalWrite(0); // Make sure trigger is low
+
+(function () {
+  var startTick;
+
+  echo.on('alert', function (level, tick) {
+    var endTick,
+      diff;
+
+    if (level == 1) {
+      startTick = tick;
+    } else {
+      endTick = tick;
+      diff = (endTick >> 0) - (startTick >> 0); // Unsigned 32 bit arithmetic
+      var afstand = diff / 2 / MICROSECDONDS_PER_CM;
+      lcd.clear();
+      lcd.println("cm: ", afstand);
+    }
+  });
+}());
+
+// Trigger a distance measurement once per second
+var triggerId = setInterval(function () {
+  trigger.trigger(10, 1); // Set trigger high for 10 microseconds
+}, 1000);
 
 module.exports = {start, update, stop}
