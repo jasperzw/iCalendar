@@ -37,9 +37,10 @@ var afgaan = function(){
         var afstand = diff / 2 / MICROSECDONDS_PER_CM;
         if(standSet === 0){
             stand = {
-                "min": afstand - 10
+                "min": afstand - 10,
                 "max": afstand + 10
             }
+            console.log(stand);
         } else {
             if(afstand < stand["min"] || afstand > stand["max"]){
                 clearInterval(triggerId);

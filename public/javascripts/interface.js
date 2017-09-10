@@ -9,7 +9,8 @@ var Gpio = require('pigpio').Gpio;
 var alarm = require('./alarm');
 var gegevens;
 var triggerId;
-
+var afstand;
+var updateId;
 screens = {
     0: function(){lcd.clear();lcd.println(gegevens.min + " tot " + gegevens.max,1); lcd.println("Wekker op " + gegevens.wekker,2);},
     1: function(){lcd.clear();lcd.println("Zon op: " + gegevens.vandaagOp,1); lcd.println("Zon on: " + gegevens.vandaagOn, 2)},
@@ -17,8 +18,8 @@ screens = {
     3: function(){lcd.clear();nu = new Date();lcd.println("het is " + nu.getHours() + ":" + nu.getMinutes(),1); lcd.println("datum: " + nu.getDate() + "/" + (nu.getMonth() + 1),2)},
     "stop": function(){lcd.clear(); lcd.off()},
     "start": function(){lcd.clear(); lcd.on()},
-    "startCm": function(){triggerId = setInterval(function () {trigger.trigger(10, 1)}, 1000);},
-    "stopCm": function(){clearInterval(triggerId)}
+    "startCm": function(){triggerId = setInterval(function () {trigger.trigger(10, 1)}, 1000);lcd.clear();updateId = setInterval(function(){lcd.println("cm: " + afstand,1)},1000);},
+    "stopCm": function(){clearInterval(triggerId); clearInterval(updateId)}
 }
 
 var start = function(tijdenDB){
@@ -149,8 +150,7 @@ trigger.digitalWrite(0); // Make sure trigger is low
       } else {
         endTick = tick;
         diff = (endTick >> 0) - (startTick >> 0); // Unsigned 32 bit arithmetic
-        var afstand = diff / 2 / MICROSECDONDS_PER_CM;
-        lcd.println("cm: " + afstand,1);
+        afstand = diff / 2 / MICROSECDONDS_PER_CM;
       }
     });
     }());
