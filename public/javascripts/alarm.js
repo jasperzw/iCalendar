@@ -18,8 +18,8 @@ var afgaan = function(){
     console.log("Ring Ring!!!!");
     var nu = new Date();
     lcd.clear();
-    lcd.println("Alarm gaat af! opstaan",1);
-    lcd.println("Het is " + nu.getHours() + 2 + ":" + nu.getMinutes,2);
+    lcd.println("Alarm gaat af!",1);
+    lcd.println("Het is " + (nu.getHours() + 2) + ":" + nu.getMinutes(),2);
     
     var triggerId = setInterval(function () {trigger.trigger(10, 1)}, 1000);
     
