@@ -3,7 +3,7 @@ var LCD = require('lcdi2c');
 var lcd = new LCD( 1,0x3f, 16, 2);
 trigger = new Gpio(23, {mode: Gpio.OUTPUT}),
 echo = new Gpio(24, {mode: Gpio.INPUT, alert: true});
-led = new Gpio(25, {mode: Gpio.OUTPUT}),
+led = new Gpio(25, {mode: Gpio.OUTPUT});
 // The number of microseconds it takes sound to travel 1cm at 20 degrees celcius
 var MICROSECDONDS_PER_CM = 1e6/34321;
 // Trigger a distance measurement once per second
@@ -59,6 +59,7 @@ var afgaan = function(){
             if(afstand < stand["min"] || afstand > stand["max"]){
                 clearInterval(triggerId);
                 clearInterval(ledId);
+                led.pwmWrite(0);
                 lcd.clear();
                 nu = new Date();
                 lcd.println("het is " + nu.getHours() + ":" + nu.getMinutes(),1);
