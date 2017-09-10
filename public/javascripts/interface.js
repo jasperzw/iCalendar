@@ -6,15 +6,15 @@ var currentScreen = 0;
 var LCD = require('lcdi2c');
 var lcd = new LCD( 1,0x3f, 16, 2);
 var Gpio = require('pigpio').Gpio;
-var gegevens = "";
-var Gpio = require('pigpio').Gpio;
+var alarm = require('./alarm');
+var gegevens;
 var triggerId;
 
 screens = {
     0: function(){lcd.clear();lcd.println(gegevens.min + " tot " + gegevens.max,1); lcd.println("Wekker op " + gegevens.wekker,2);},
     1: function(){lcd.clear();lcd.println("Zon op: " + gegevens.vandaagOp,1); lcd.println("Zon on: " + gegevens.vandaagOn, 2)},
     2: function(){lcd.clear();lcd.println(vakken(gegevens)[0],1); lcd.println(vakken(gegevens)[1],2)},
-    3: function(){lcd.clear();nu = new Date();lcd.println("het is " + nu.getHours() + ":" + nu.getMinutes(),1); lcd.println("datum: " + nu.getDay() + "/" + nu.getMonth(),2)},
+    3: function(){lcd.clear();nu = new Date();lcd.println("het is " + nu.getHours() + ":" + nu.getMinutes(),1); lcd.println("datum: " + nu.getDate() + "/" + (nu.getMonth() + 1),2)},
     "stop": function(){lcd.clear(); lcd.off()},
     "start": function(){lcd.clear(); lcd.on()},
     "startCm": function(){triggerId = setInterval(function () {trigger.trigger(10, 1)}, 1000);},
@@ -125,37 +125,11 @@ button = new Gpio(4, {
   button.on('interrupt', function (level) {
   if(level === 0){
   console.log("Knop 0: ", level);
-  screens[0]();
+  alarm.afgaan();
         }
   });
 
 
-  trigger = new Gpio(23, {mode: Gpio.OUTPUT}),
-  echo = new Gpio(24, {mode: Gpio.INPUT, alert: true});
-// The number of microseconds it takes sound to travel 1cm at 20 degrees celcius
-var MICROSECDONDS_PER_CM = 1e6/34321;
 
-trigger.digitalWrite(0); // Make sure trigger is low
-
-(function () {
-  var startTick;
-
-  echo.on('alert', function (level, tick) {
-    var endTick,
-      diff;
-
-    if (level == 1) {
-      startTick = tick;
-    } else {
-      endTick = tick;
-      diff = (endTick >> 0) - (startTick >> 0); // Unsigned 32 bit arithmetic
-      var afstand = diff / 2 / MICROSECDONDS_PER_CM;
-      lcd.clear();
-      lcd.println("cm: ", afstand);
-    }
-  });
-}());
-
-// Trigger a distance measurement once per second
 
 module.exports = {start, update, stop}
