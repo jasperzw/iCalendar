@@ -17,6 +17,7 @@ var afgaan = function(){
     var standSet = 0;
     console.log("Ring Ring!!!!");
     var nu = new Date();
+    lcd.clear();
     lcd.println("Alarm gaat af! opstaan",1);
     lcd.println("Het is " + nu.getHours() + 2 + ":" + nu.getMinutes,2);
     
@@ -40,6 +41,7 @@ var afgaan = function(){
                 "min": afstand - 10,
                 "max": afstand + 10
             }
+            standSet = 1;
             console.log(stand);
         } else {
             if(afstand < stand["min"] || afstand > stand["max"]){
