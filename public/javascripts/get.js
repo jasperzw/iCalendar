@@ -43,8 +43,7 @@ return vr;
             //TODO parse date to readable format. outputArray[k].DTSTART
 
             var currentDate = new Date();
-            var day = digitControle(currentDate.getDate() - 2);
-            var day = digitControle(currentDate.getDate() - 1);
+            var day = digitControle(currentDate.getDate() + 1);
             var month = digitControle(currentDate.getMonth() + 1);
             var year = currentDate.getFullYear();
             var dagHoeveelheid = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
