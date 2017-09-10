@@ -1,4 +1,6 @@
 var Gpio = require('pigpio').Gpio;
+var LCD = require('lcdi2c');
+var lcd = new LCD( 1,0x3f, 16, 2);
 trigger = new Gpio(23, {mode: Gpio.OUTPUT}),
 echo = new Gpio(24, {mode: Gpio.INPUT, alert: true});
 // The number of microseconds it takes sound to travel 1cm at 20 degrees celcius
