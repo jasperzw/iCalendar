@@ -20,7 +20,7 @@ var afgaan = function(){
     var nu = new Date();
     lcd.clear();
     lcd.println("Alarm gaat af!",1);
-    lcd.println("Het is " + (nu.getHours() + 2) + ":" + nu.getMinutes(),2);
+    lcd.println("Het is " + ('0'+ (nu.getHours() + 2)).slice(-2) + ":" + ('0'+nu.getMinutes()).slice(-2),2);
 
     dutyCycle = 0;
   

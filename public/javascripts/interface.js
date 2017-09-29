@@ -15,7 +15,7 @@ screens = {
     0: function(){lcd.clear();lcd.println(gegevens.min + " tot " + gegevens.max,1); lcd.println("Wekker op " + gegevens.wekker,2);},
     1: function(){lcd.clear();lcd.println("Zon op: " + gegevens.vandaagOp,1); lcd.println("Zon on: " + gegevens.vandaagOn, 2)},
     2: function(){lcd.clear();lcd.println(vakken(gegevens)[0],1); lcd.println(vakken(gegevens)[1],2)},
-    3: function(){lcd.clear();nu = new Date();lcd.println("het is " + nu.getHours() + ":" + nu.getMinutes(),1); lcd.println("datum: " + nu.getDate() + "/" + (nu.getMonth() + 1),2)},
+    3: function(){lcd.clear();nu = new Date();lcd.println("het is " + ('0'+ (nu.getHours() + 2)).slice(-2) + ":" + ('0'+ nu.getHours()).slice(-2),1); lcd.println("datum: " + nu.getDate() + "/" + ('0'+ (nu.getMonth() + 1)).slice(-2),2)},
     "stop": function(){lcd.clear(); lcd.off()},
     "start": function(){lcd.clear(); lcd.on()},
     "startCm": function(){triggerId = setInterval(function () {trigger.trigger(10, 1)}, 1000);lcd.clear();updateId = setInterval(function(){lcd.println("cm: " + afstand,1)},1000);},
