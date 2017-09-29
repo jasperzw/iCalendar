@@ -56,7 +56,7 @@ var afgaan = function(){
             standSet = 1;
             console.log(stand);
         } else {
-            if(afstand < stand["min"] || afstand > stand["max"]){
+            if(afstand < stand["min"] || afstand > stand["max"] || endAlarm === 0){
                 clearInterval(triggerId);
                 clearInterval(ledId);
                 led.pwmWrite(0);
@@ -64,6 +64,7 @@ var afgaan = function(){
                 nu = new Date();
                 lcd.println("TEST 1 " + nu.getHours() + ":" + nu.getMinutes(),1);
                 lcd.println("datum: " + nu.getDate() + "/" + (nu.getMonth() + 1),2);
+                endAlarm = 1;
             }
         }
       }
