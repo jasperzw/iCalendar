@@ -47,6 +47,7 @@ lcd.off();
 }
 
 var vakken = function(gegevens){
+    if(gegevens["wekker"] !== "0000"){
     gegevens["dateStart"].sort(function(a, b){
         var keyA = a.startDate,
             keyB = b.startDate;
@@ -70,6 +71,9 @@ var vakken = function(gegevens){
         }
     }
     var ln = [ln1,ln2];
+    } else {
+        ln = ["Geen les morgen", ""];
+    }
     return ln;
 }
 
