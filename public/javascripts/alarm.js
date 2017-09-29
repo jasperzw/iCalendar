@@ -62,7 +62,7 @@ var afgaan = function(){
                 led.pwmWrite(0);
                 lcd.clear();
                 nu = new Date();
-                lcd.println("het is " + nu.getHours() + ":" + nu.getMinutes(),1);
+                lcd.println("TEST 1 " + nu.getHours() + ":" + nu.getMinutes(),1);
                 lcd.println("datum: " + nu.getDate() + "/" + (nu.getMonth() + 1),2);
             }
         }
