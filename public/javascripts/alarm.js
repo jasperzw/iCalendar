@@ -39,8 +39,8 @@ var afgaan = function(){
     var startTick;
     
     echo.on('alert', function (level, tick) {
-      var endTick,
-        diff;
+      var endTick, diff, endAlarm;
+      endAlarm = 0;
     
       if (level == 1) {
         startTick = tick;
