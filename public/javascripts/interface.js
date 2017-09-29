@@ -155,6 +155,7 @@ trigger.digitalWrite(0); // Make sure trigger is low
         endTick = tick;
         diff = (endTick >> 0) - (startTick >> 0); // Unsigned 32 bit arithmetic
         afstand = diff / 2 / MICROSECDONDS_PER_CM;
+        console.log("afstand van HC-SR04: ", afstand);
       }
     });
     }());
